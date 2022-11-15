@@ -77,4 +77,8 @@ export class CitiesListComponent implements OnInit {
   filterValue($event: Event) {
     this.filtering$.next(($event.target as HTMLTextAreaElement).value)
   }
+
+  trackByFn(index: number, item: City) {
+    return item.id;
+  };
 }

@@ -15,7 +15,7 @@
   </div>
   <div fxLayout="row wrap" fxLayoutGap.gt-sm="24px">
     <app-city-card [city]="city"
-                   *ngFor="let city of cities"
-                   (onEditCity)="editCity($event)"></app-city-card>
+                   *ngFor="let city of cities; trackBy: trackByFn"
+                   (onEditCity)="editCity($event)" ></app-city-card>
   </div>
 </div>
