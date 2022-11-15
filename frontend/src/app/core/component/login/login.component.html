@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Login</h1>
+<div mat-dialog-content>
+  <div class="mat-accent">{{data.additionalMessage}}</div>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutGap="24px">
+    <mat-form-field appearance="standard">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username">
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password">
+    </mat-form-field>
+  </form>
+  <button class="mat-button" mat-button [mat-dialog-close]>Cancel</button>
+  <button class="mat-button" mat-button (click)="onSubmit()" cdkFocusInitial>
+    Login
+  </button>
+</div>
+

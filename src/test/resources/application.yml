@@ -1,0 +1,16 @@
+
+spring:
+  mongodb:
+    embedded:
+      version: 4.4.9
+app-initialization:
+  init-file: initial-cities-test.csv
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              ReactiveMongoTemplate: DEBUG

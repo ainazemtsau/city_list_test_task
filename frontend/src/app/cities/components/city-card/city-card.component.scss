@@ -1,0 +1,12 @@
+mat-card{
+  padding-bottom: 0;
+  mat-card-header{
+    button{
+      margin-top: -12px;
+    }
+  }
+}
+mat-card img{
+  min-width: 288px;
+  height: 250px;
+}

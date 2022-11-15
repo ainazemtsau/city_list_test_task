@@ -1,0 +1,9 @@
+<mat-card>
+  <mat-card-header fxLayout fxLayoutAlign="space-between flex-start">
+    <mat-card-title>{{city.name}}</mat-card-title>
+    <button mat-icon-button (click)="editCity(city)">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </mat-card-header>
+  <img mat-card-image [src]="city.photo" [alt]="city.name">
+</mat-card>

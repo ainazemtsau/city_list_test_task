@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Update city</h1>
+<div mat-dialog-content>
+  <form [formGroup]="cityEdit" fxLayout="column" fxLayoutGap="24px">
+    <mat-form-field appearance="standard">
+      <mat-label>City name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>City photo</mat-label>
+      <input matInput formControlName="photo">
+    </mat-form-field>
+  </form>
+
+  <button class="mat-button" mat-button [mat-dialog-close] cdkFocusInitial>Cancel</button>
+  <button class="mat-button" mat-button [mat-dialog-close]="cityEdit.value">
+    Update
+  </button>
+</div>
