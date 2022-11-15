@@ -32,10 +32,23 @@ public class SecurityHandlerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("When try login user with invalid login or password")
+    @DisplayName("When try login user with invalid password")
     public void testLoginUserWithInvalidCredentials() {
         var loginUrl = "/v1/login";
         var userLoginDto = new UserLoginDto("user", "userInvalidPassword", null);
+        webTestClient.post()
+                .uri(loginUrl)
+                .bodyValue(userLoginDto)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(String.class);
+    }
+    @Test
+    @DisplayName("When try login user with invalid username")
+    public void testLoginUserWithInvalidUsername() {
+        var loginUrl = "/v1/login";
+        var userLoginDto = new UserLoginDto("invalidUserName", "userInvalidPassword", null);
         webTestClient.post()
                 .uri(loginUrl)
                 .bodyValue(userLoginDto)

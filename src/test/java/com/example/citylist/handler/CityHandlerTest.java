@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -28,7 +29,7 @@ public class CityHandlerTest extends AbstractIntegrationTest {
         wrongCity.setName("Beijing");
         wrongCity.setPhoto("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Tiananmen_Gate.jpg/500px-Tiananmen_Gate.jpg");
 
-        testNumberOfCitiesInResponse("/city?page=1&size=10", 10)
+        testNumberOfCitiesInResponse("/v1/city?page=1&size=10", 10)
                 .doesNotContain(wrongCity)
                 .contains(firstCity);
     }
@@ -36,7 +37,7 @@ public class CityHandlerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("When request has send query params page=2&size=50 should return last 50 cities")
     public void testPaginationWithNotFirsParams() {
-        String url = "/city?page=2&size=50";
+        String url = "/v1/city?page=2&size=50";
         int expectSize = 50;
         City lastCity = new City();
         lastCity.setId(100L);
@@ -48,7 +49,7 @@ public class CityHandlerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("When request has send query params page=3&size=50 should return 0 cities")
     public void testPaginationWithNonExpectHighParams() {
-        String url = "/city?page=3&size=50";
+        String url = "/v1/city?page=3&size=50";
         int expectSize = 0;
         testNumberOfCitiesInResponse(url, expectSize);
     }
@@ -56,7 +57,7 @@ public class CityHandlerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("When request has send query params page=0&size=50 should return first 50 cities")
     public void testPaginationWith0Page() {
-        String url = "/city?page=0&size=50";
+        String url = "/v1/city?page=0&size=50";
         int expectSize = 50;
         testNumberOfCitiesInResponse(url, expectSize);
     }
@@ -64,7 +65,7 @@ public class CityHandlerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("When send request to /city/number should return number of all city in database")
     public void testTotalNumber() {
-        String url = "/city/number";
+        String url = "/v1/city/number";
         webTestClient.get()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
@@ -76,9 +77,10 @@ public class CityHandlerTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("When send request to update city should update in database by id")
+    @WithMockUser(username="admin",roles={"ALLOW_EDIT"})
     public void testUpdateCity() {
 
-        var url = "/city";
+        var url = "/v1/city";
         var testPhotoUrl = "TestPhotoUrl";
         var testCityName = "TestCityName";
         var cityTestId = 3L;
@@ -101,6 +103,27 @@ public class CityHandlerTest extends AbstractIntegrationTest {
         assertThat(city.getName()).isEqualTo(testCityName);
     }
 
+    @Test
+    @DisplayName("When send request to update city with empty id must return bad request error")
+    @WithMockUser(username="admin",roles={"ALLOW_EDIT"})
+    public void testUpdateCityWithEmptyCityName() {
+
+        var url = "/v1/city";
+        var testPhotoUrl = "TestPhotoUrl";
+        var testCityName = "";
+        var cityTestId = 3L;
+        var testCityUpdate = new City();
+        testCityUpdate.setId(cityTestId);
+        testCityUpdate.setPhoto(testPhotoUrl);
+        testCityUpdate.setName(testCityName);
+
+        webTestClient.put()
+                .uri(url)
+                .bodyValue(testCityUpdate)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
 
     @Test
     public void testSearchCity() {
