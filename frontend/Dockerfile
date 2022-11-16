@@ -1,28 +1,19 @@
-# Stage 1: Compile and Build angular codebase
+# Stage 1
+FROM node:19.1.0-slim as node
 
-# Use official node image as the base image
-FROM node:latest as build
+WORKDIR /usr/src/app
 
-# Set the working directory
-WORKDIR /usr/local/app
+COPY package*.json ./
 
-# Add the source code to app
-COPY ./ /usr/local/app/
-
-# Install all the dependencies
 RUN npm install
 
-# Generate the build of the application
+COPY . .
+
 RUN npm run build
 
+# Stage 2
+FROM nginx:1.13.12-alpine
 
-# Stage 2: Serve app with nginx server
+COPY --from=node /usr/src/app/dist/frontend /usr/share/nginx/html
 
-# Use official nginx image as the base image
-FROM nginx:latest
-
-# Copy the build output to replace the default nginx contents.
-COPY --from=build /usr/local/app/dist/sample-angular-app /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf

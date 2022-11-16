@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +35,12 @@ public class InitializeServiceFromCsv implements InitializeService {
     public void initApp() {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(initFile);
+        ClassPathResource cpr = new ClassPathResource(initFile);
         try {
             if (resource == null) {
                 LOGGER.warn("There is not file {} application start without initialization", initFile);
             } else {
-                List<City> initCityList = cityDataExtractor.extractData(resource.getPath());
+                List<City> initCityList = cityDataExtractor.extractData(cpr.getPath());
                 int initCityListSize = initCityList.size();
                 LOGGER.info("Extract {} cities from file", initCityListSize);
                 List<City> cities = cityRepository.saveAll(initCityList)

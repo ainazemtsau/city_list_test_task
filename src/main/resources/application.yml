@@ -1,2 +1,6 @@
+spring:
+  data:
+    mongodb:
+      host: mongodb
 app-initialization:
   init-file: initial-cities.csv

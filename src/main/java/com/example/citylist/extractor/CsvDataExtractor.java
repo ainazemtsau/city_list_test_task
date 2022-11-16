@@ -3,9 +3,11 @@ package com.example.citylist.extractor;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class CsvDataExtractor<T> implements DataExtractor<T> {
@@ -22,8 +24,10 @@ public class CsvDataExtractor<T> implements DataExtractor<T> {
 
     @Override
     public List<T> extractData(String from) throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource(from);
+        InputStream inputStream = classPathResource.getInputStream();
         List<T> data;
-        try (CSVReader reader = new CSVReader(new FileReader(from))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(inputStream))) {
             reader.skip(1);
             csvToBean.setCsvReader(reader);
             data = csvToBean.parse();
